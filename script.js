@@ -16,14 +16,16 @@ var scaleFactor = canvasWidth / 480;
 var ctx = canvas.getContext("2d");
 
 var score = 0;
+var bricksDown = 0; //number of bricks hit
+var dscore = 1; //number of points to add to score for each brick hit
 var lives = 3;
 
 var x = canvasWidth / 2;
 var y = canvasHeight - 30 * scaleFactor;
 
 var speed = 3 * scaleFactor;
-var dx = speed;
-var dy = -speed;
+dx = 0;
+dy = -speed * Math.sqrt(2);
 
 var ballRadius = 10 * scaleFactor;
 
@@ -98,9 +100,11 @@ function collisionDetection() {
         if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
           dy = -dy;
           b.status = 0;
-          score++;
-          if (score == brickRowCount * brickColumnCount) {
-            alert("YOU WIN, CONGRATULATIONS!");
+          score += dscore;
+          bricksDown++;
+          dscore++;
+          if (bricksDown == brickRowCount * brickColumnCount) {
+            displayWinMessage();
             document.location.reload();
           }
         }
@@ -109,11 +113,23 @@ function collisionDetection() {
   }
 }
 
+function displayWinMessage() {
+  var highscore = localStorage.getItem("highscore");
+  highscore = !highscore || score > highscore ? score : highscore;
+  localStorage.setItem("highscore", highscore);
+  alert("You won!\nScore: " + score + "\nHigh score: " + highscore);
+}
+
 function drawScore() {
   ctx.font = 16 * scaleFactor + "px Arial";
   ctx.fillStyle = "#0095DD";
-  ctx.fillText("Score: " + score, 8 * scaleFactor, 20 * scaleFactor);
+  var str = "Score: " + score;
+  if (dscore != 1) {
+    str += " (Next: +" + dscore + ")";
+  }
+  ctx.fillText(str, 8 * scaleFactor, 20 * scaleFactor);
 }
+
 
 function drawLives() {
   ctx.font = 16 * scaleFactor + "px Arial";
@@ -139,25 +155,27 @@ function draw() {
   if (y + dy < ballRadius) {
     dy = -dy;
   }
+  //touch paddle
   if (x > paddleX - ballRadius && x - ballRadius < paddleX + paddleWidth && y + dy > canvasHeight - paddleHeight - ballRadius) {
-    var angle = (x - paddleX - paddleWidth /2) / (paddleWidth /2); //ratio between dx and sqrt2*speed
+    dscore = 1;
+    var angle = (x - paddleX - paddleWidth / 2) / (paddleWidth / 2); //ratio between dx and sqrt2*speed
     angle = angle < -0.95 ? -0.95 : angle; //min angle at -0.95
     angle = angle > 0.95 ? 0.95 : angle; //max angle at 0.95
-    dx = Math.sqrt(2)*speed*angle;
-    dy = -Math.sqrt(Math.abs(2*speed*speed - dx*dx))
+    dx = Math.sqrt(2) * speed * angle;
+    dy = -Math.sqrt(Math.abs(2 * speed * speed - dx * dx))
   }
   else if (y > canvasHeight - ballRadius) {
     //touch the ground
     lives--;
     if (!lives) {
-      alert("GAME OVER");
+      alert("Game over. You lost!");
       document.location.reload();
     }
     else {
       x = canvasWidth / 2;
       y = canvasHeight - 30 * scaleFactor;
-      dx = speed;
-      dy = -speed;
+      dx = 0;
+      dy = -speed * Math.sqrt(2);
       paddleX = (canvasWidth - paddleWidth) / 2;
     }
 
@@ -182,9 +200,6 @@ function keyDownHandler(e) {
   }
   else if (e.keyCode == 37) {
     leftPressed = true;
-  }
-  else if (e.keyCode == 40) {
-    dy = speed;
   }
 }
 
