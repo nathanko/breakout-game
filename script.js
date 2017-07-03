@@ -19,6 +19,8 @@ var score = 0;
 var bricksDown = 0; //number of bricks hit
 var dscore = 1; //number of points to add to score for each brick hit
 var lives = 3;
+var won = false;
+var lost = false;
 
 var x = canvasWidth / 2;
 var y = canvasHeight - 30 * scaleFactor;
@@ -102,22 +104,71 @@ function collisionDetection() {
           b.status = 0;
           score += dscore;
           bricksDown++;
-          dscore*=2;
-          if (bricksDown == brickRowCount * brickColumnCount) {
-            displayWinMessage();
-            document.location.reload();
-          }
+          dscore *= 2;
         }
       }
     }
   }
 }
 
+function drawLives() {
+  ctx.font = 16 * scaleFactor + "px Arial";
+  ctx.fillStyle = "#0095DD";
+  ctx.fillText("Lives: " + lives, canvasWidth - 65 * scaleFactor, 20 * scaleFactor);
+}
+
 function displayWinMessage() {
   var highscore = localStorage.getItem("highscore");
-  highscore = !highscore || score > highscore ? score : highscore;
+  var newhs = false;
+  if (!highscore || score > highscore) {
+    highscore = score;
+    newhs = true;
+  }
   localStorage.setItem("highscore", highscore);
-  alert("You won!\nScore: " + score + "\nHigh score: " + highscore);
+
+  //clear message area
+  ctx.beginPath();
+  ctx.rect(0, 20 * scaleFactor, canvasWidth, canvasHeight - paddleHeight - 20 * scaleFactor);
+  ctx.fillStyle = "#eee";
+  ctx.fill();
+  ctx.closePath();
+
+  ctx.beginPath();
+
+  ctx.font = 16 * scaleFactor + "px Arial";
+  ctx.fillStyle = "#0c0";
+  if (newhs) {
+    ctx.fillText("You won! New highscore!", canvasWidth / 2 - 90 * scaleFactor, canvasHeight / 2 - 90 * scaleFactor);
+  }
+  else {
+    ctx.fillText("You won!", canvasWidth / 2 - 40 * scaleFactor, canvasHeight / 2 - 90 * scaleFactor);
+  }
+
+  ctx.font = 20 * scaleFactor + "px Arial";
+  ctx.fillText("Score: " + score, canvasWidth / 2 - 50 * scaleFactor, canvasHeight / 2 - 55 * scaleFactor);
+  ctx.fillText("Highscore: " + highscore, canvasWidth / 2 - 50 * scaleFactor, canvasHeight / 2 - 30 * scaleFactor);
+
+  ctx.font = 12 * scaleFactor + "px Arial";
+  ctx.fillStyle = "#aaa";
+  ctx.fillText("Click anywhere or press any key to play again!", canvasWidth / 2 - 120 * scaleFactor, canvasHeight / 2 + 10 * scaleFactor);
+
+}
+
+function displayLoseMessage() {
+	 //clear message area
+  ctx.beginPath();
+  ctx.rect(0, canvasHeight / 2 -25*scaleFactor, canvasWidth, 50 * scaleFactor);
+  ctx.fillStyle = "#eee";
+  ctx.fill();
+  ctx.closePath();
+
+  ctx.font = 16 * scaleFactor + "px Arial";
+  ctx.fillStyle = "#ff0000";
+  ctx.fillText("You lost! Game over!", canvasWidth / 2 - 75 * scaleFactor, canvasHeight / 2 - 10 * scaleFactor);
+  ctx.font = 12 * scaleFactor + "px Arial";
+  ctx.fillStyle = "#aaa";
+  ctx.fillText("Click anywhere or press any key to play again!", canvasWidth / 2 - 120 * scaleFactor, canvasHeight / 2 + 10 * scaleFactor);
+
 }
 
 function drawScore() {
@@ -130,27 +181,30 @@ function drawInfo() {
   ctx.font = 16 * scaleFactor + "px Arial";
   ctx.fillStyle = "#aaa";
   if (dscore > 1) {
-    ctx.fillText("Next consecutive hit: +" + dscore + " bonus", canvasWidth / 2 - 100 * scaleFactor, canvasHeight / 2 + 100);
+    ctx.fillText("Next consecutive hit: +" + dscore + " bonus", canvasWidth / 2 - 100 * scaleFactor, canvasHeight / 2 + 10*scaleFactor);
   }
-}
-
-
-function drawLives() {
-  ctx.font = 16 * scaleFactor + "px Arial";
-  ctx.fillStyle = "#0095DD";
-  ctx.fillText("Lives: " + lives, canvasWidth - 65 * scaleFactor, 20 * scaleFactor);
 }
 
 function draw() {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
   drawBricks();
+  collisionDetection();
   drawBall();
   drawPaddle();
   drawScore();
   drawInfo();
   drawLives();
-  collisionDetection();
+
+  //check win
+  if (bricksDown == brickRowCount * brickColumnCount) {
+    won = true;
+    displayWinMessage();
+    canvas.addEventListener("click", reload, false);
+    canvas.addEventListener("keyup", reload, false);
+
+    //document.location.reload();
+  }
 
 
   //set next ball position
@@ -174,15 +228,17 @@ function draw() {
     lives--;
     dscore = 1;
     if (!lives) {
-      alert("Game over. You lost!");
-      document.location.reload();
+    	lost = true;
+      displayLoseMessage();
+      canvas.addEventListener("click", reload, false);
+      canvas.addEventListener("keyup", reload, false);
     }
     else {
       x = canvasWidth / 2;
       y = canvasHeight - 30 * scaleFactor;
       dx = 0;
       dy = -speed * Math.sqrt(2);
-      paddleX = (canvasWidth - paddleWidth) / 2;
+      //paddleX = (canvasWidth - paddleWidth) / 2;
     }
 
   }
@@ -197,7 +253,9 @@ function draw() {
 
   x += dx;
   y += dy;
-  requestAnimationFrame(draw);
+  if (!won && !lost) {
+    requestAnimationFrame(draw);
+  }
 }
 
 function keyDownHandler(e) {
@@ -225,10 +283,14 @@ function mouseMoveHandler(e) {
   }
 }
 
+function reload(e) {
+  document.location.reload();
+}
 
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
-document.addEventListener("mousemove", mouseMoveHandler, false);
+
+canvas.addEventListener("keydown", keyDownHandler, false);
+canvas.addEventListener("keyup", keyUpHandler, false);
+canvas.addEventListener("mousemove", mouseMoveHandler, false);
 
 
 draw();
