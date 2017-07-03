@@ -201,7 +201,7 @@ function draw() {
     won = true;
     displayWinMessage();
     canvas.addEventListener("click", reload, false);
-    canvas.addEventListener("keyup", reload, false);
+    document.addEventListener("keyup", reload, false);
 
     //document.location.reload();
   }
@@ -231,7 +231,7 @@ function draw() {
     	lost = true;
       displayLoseMessage();
       canvas.addEventListener("click", reload, false);
-      canvas.addEventListener("keyup", reload, false);
+      document.addEventListener("keyup", reload, false);
     }
     else {
       x = canvasWidth / 2;
@@ -288,8 +288,8 @@ function reload(e) {
 }
 
 
-canvas.addEventListener("keydown", keyDownHandler, false);
-canvas.addEventListener("keyup", keyUpHandler, false);
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
 canvas.addEventListener("mousemove", mouseMoveHandler, false);
 
 
