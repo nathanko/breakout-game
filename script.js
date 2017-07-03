@@ -18,6 +18,7 @@ var scaleFactor = canvasWidth / 480;
 var ctx = canvas.getContext("2d");
 
 var score = 0;
+var highscore = localStorage.getItem("highscore");
 var bricksDown = 0; //number of bricks hit
 var dscore = 1; //number of points to add to score for each brick hit
 var lives = 3;
@@ -40,7 +41,7 @@ var paddleX = (canvasWidth - paddleWidth) / 2;
 var rightPressed = false;
 var leftPressed = false;
 
-var brickRowCount = 3;
+var brickRowCount = 4;
 var brickColumnCount = 5;
 var brickWidth = 75 * scaleFactor;
 var brickHeight = 20 * scaleFactor;
@@ -120,7 +121,6 @@ function drawLives() {
 }
 
 function displayWinMessage() {
-  var highscore = localStorage.getItem("highscore");
   var newhs = false;
   if (!highscore || score > highscore) {
     highscore = score;
@@ -176,7 +176,11 @@ function displayLoseMessage() {
 function drawScore() {
   ctx.font = 16 * scaleFactor + "px Arial";
   ctx.fillStyle = "#0095DD";
-  ctx.fillText("Score: " + score, 8 * scaleFactor, 20 * scaleFactor);
+  var scoreText = "Score: " + score;
+  if (highscore){
+    scoreText+="      High score: " + highscore; 
+  }
+  ctx.fillText(scoreText, 8 * scaleFactor, 20 * scaleFactor);
 }
 
 function drawInfo() {
