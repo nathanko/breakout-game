@@ -198,8 +198,8 @@ function drawInfo() {
 function drawWelcome() {
   ctx.font = 16 * scaleFactor + "px Arial";
   ctx.fillStyle = "#aaa";
-  ctx.fillText("Use left/right arrow keys or mouse to move", canvasWidth / 2 - 150 * scaleFactor, canvasHeight / 2 + 10 * scaleFactor);
-  ctx.fillText("Hit multiple bricks at a time gain extra points", canvasWidth / 2 - 150 * scaleFactor, canvasHeight / 2 + 25 * scaleFactor);
+  ctx.fillText("Use left/right arrow keys or mouse to move.", canvasWidth / 2 - 150 * scaleFactor, canvasHeight / 2 + 10 * scaleFactor);
+  ctx.fillText("Hit multiple bricks at a time for extra points!", canvasWidth / 2 - 150 * scaleFactor, canvasHeight / 2 + 25 * scaleFactor);
 
 }
 
