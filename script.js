@@ -129,7 +129,7 @@ function displayWinMessage() {
   ctx.fillStyle = "#eee";
   ctx.fill();
   ctx.closePath();
-  
+
   drawScore();
   drawLives();
 
@@ -175,8 +175,8 @@ function drawScore() {
   ctx.font = 16 * scaleFactor + "px Arial";
   ctx.fillStyle = "#777";
   var scoreText = "Score: " + score;
-  if (highscore){
-    scoreText+="      High score: " + highscore; 
+  if (highscore) {
+    scoreText += "      High score: " + highscore;
   }
   ctx.fillText(scoreText, 8 * scaleFactor, 20 * scaleFactor);
 }
@@ -190,17 +190,29 @@ function drawLives() {
 function drawInfo() {
   ctx.font = 16 * scaleFactor + "px Arial";
   ctx.fillStyle = "#aaa";
-  if (dscore > 2  ) {
-    ctx.fillText("+" + dscore/2 + " points! Nice streak!", canvasWidth / 2 - 80 * scaleFactor, canvasHeight / 2 + 10 * scaleFactor);
+  if (dscore > 2) {
+    ctx.fillText("+" + dscore / 2 + " points! Nice streak!", canvasWidth / 2 - 80 * scaleFactor, canvasHeight / 2 + 10 * scaleFactor);
   }
+}
+
+function drawWelcome() {
+  ctx.font = 16 * scaleFactor + "px Arial";
+  ctx.fillStyle = "#aaa";
+  ctx.fillText("Use left/right arrow keys or mouse to move", canvasWidth / 2 - 150 * scaleFactor, canvasHeight / 2 + 10 * scaleFactor);
+  ctx.fillText("Hit multiple bricks at a time gain extra points", canvasWidth / 2 - 150 * scaleFactor, canvasHeight / 2 + 25 * scaleFactor);
+
 }
 
 function draw() {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-  drawBricks();  
+  if (score < 3 && dscore <= 2) {
+    drawWelcome();
+  }
+
+  drawBricks();
   collisionDetection();
-  drawInfo();  
+  drawInfo();
   drawBall();
   drawPaddle();
   drawScore();
@@ -298,6 +310,8 @@ function mouseMoveHandler(e) {
 function reload(e) {
   document.location.reload();
 }
+
+//welcome
 
 
 document.addEventListener("keydown", keyDownHandler, false);
