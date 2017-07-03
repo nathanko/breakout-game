@@ -4,6 +4,9 @@
 }
 
 canvas {
+  /*width="480" height="320"*/
+  /*width: 480px;
+  height: 320px;*/
   background: #eee;
   display: block;
   margin: 0 auto;
