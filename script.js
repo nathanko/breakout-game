@@ -203,6 +203,7 @@ function draw() {
     won = true;
     displayWinMessage();
     canvas.addEventListener("click", reload, false);
+    canvas.addEventListener("touchend", reload, false);
     document.addEventListener("keyup", reload, false);
 
     //document.location.reload();
@@ -233,6 +234,7 @@ function draw() {
       lost = true;
       displayLoseMessage();
       canvas.addEventListener("click", reload, false);
+      canvas.addEventListener("touchend", reload, false);
       document.addEventListener("keyup", reload, false);
     }
     else {
@@ -293,6 +295,7 @@ function reload(e) {
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 canvas.addEventListener("mousemove", mouseMoveHandler, false);
+canvas.addEventListener("touchmove", mouseMoveHandler, false);
 
 
 draw();
