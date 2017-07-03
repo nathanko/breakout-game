@@ -16,7 +16,7 @@ var scaleFactor = canvasWidth / 480;
 var ctx = canvas.getContext("2d");
 
 var score = 0;
-var lives = 1;
+var lives = 3;
 
 var x = canvasWidth / 2;
 var y = canvasHeight - 30 * scaleFactor;
