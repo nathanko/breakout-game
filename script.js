@@ -1,34 +1,34 @@
 var canvas = document.getElementById("game-canvas");
 
-if (window.innerHeight < window.innerWidth){
-canvas.height = window.innerHeight;
-canvas.width = canvas.height*480/320;
+if (window.innerHeight < window.innerWidth) {
+  canvas.height = window.innerHeight;
+  canvas.width = canvas.height * 480 / 320;
 }
-else{
-canvas.width = window.innerWidth;
-canvas.height = canvas.width*320/480;
+else {
+  canvas.width = window.innerWidth;
+  canvas.height = canvas.width * 320 / 480;
 
 }
 
 var canvasWidth = canvas.width;
 var canvasHeight = canvas.height;
-var scaleFactor = canvasWidth/480;
+var scaleFactor = canvasWidth / 480;
 var ctx = canvas.getContext("2d");
 
 var score = 0;
-var lives = 3;
+var lives = 1;
 
 var x = canvasWidth / 2;
-var y = canvasHeight - 30;
+var y = canvasHeight - 30 * scaleFactor;
 
-var speed = 3*scaleFactor;
+var speed = 3 * scaleFactor;
 var dx = speed;
 var dy = -speed;
 
-var ballRadius = 10*scaleFactor;
+var ballRadius = 10 * scaleFactor;
 
-var paddleHeight = 10*scaleFactor;
-var paddleWidth = 75*scaleFactor;
+var paddleHeight = 10 * scaleFactor;
+var paddleWidth = 75 * scaleFactor;
 var paddleX = (canvasWidth - paddleWidth) / 2;
 
 var rightPressed = false;
@@ -36,11 +36,11 @@ var leftPressed = false;
 
 var brickRowCount = 3;
 var brickColumnCount = 5;
-var brickWidth = 75*scaleFactor;
-var brickHeight = 20*scaleFactor;
-var brickPadding = 10*scaleFactor;
-var brickOffsetTop = 30*scaleFactor;
-var brickOffsetLeft = 30*scaleFactor;
+var brickWidth = 75 * scaleFactor;
+var brickHeight = 20 * scaleFactor;
+var brickPadding = 10 * scaleFactor;
+var brickOffsetTop = 30 * scaleFactor;
+var brickOffsetLeft = 30 * scaleFactor;
 
 
 var bricks = [];
@@ -56,7 +56,7 @@ for (c = 0; c < brickColumnCount; c++) {
 }
 
 function drawBall() {
-  console.log("x: " + x + " y: " + y);
+  //console.log("x: " + x + " y: " + y);
   ctx.beginPath();
   ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
   ctx.fillStyle = "#0095DD";
@@ -110,15 +110,15 @@ function collisionDetection() {
 }
 
 function drawScore() {
-  ctx.font = 16*scaleFactor + "px Arial";
+  ctx.font = 16 * scaleFactor + "px Arial";
   ctx.fillStyle = "#0095DD";
-  ctx.fillText("Score: " + score, 8*scaleFactor, 20*scaleFactor);
+  ctx.fillText("Score: " + score, 8 * scaleFactor, 20 * scaleFactor);
 }
 
 function drawLives() {
-  ctx.font = 16*scaleFactor + "px Arial";
+  ctx.font = 16 * scaleFactor + "px Arial";
   ctx.fillStyle = "#0095DD";
-  ctx.fillText("Lives: " + lives, canvasWidth - 65*scaleFactor, 20*scaleFactor);
+  ctx.fillText("Lives: " + lives, canvasWidth - 65 * scaleFactor, 20 * scaleFactor);
 }
 
 function draw() {
@@ -139,24 +139,28 @@ function draw() {
   if (y + dy < ballRadius) {
     dy = -dy;
   }
-  else if (y + dy > canvasHeight - ballRadius) {
-    if (x > paddleX && x < paddleX + paddleWidth) {
-      dy = -dy;
+  if (x > paddleX - ballRadius && x - ballRadius < paddleX + paddleWidth && y + dy > canvasHeight - paddleHeight - ballRadius) {
+    var angle = (x - paddleX - paddleWidth /2) / (paddleWidth /2); //ratio between dx and sqrt2*speed
+    angle = angle < -0.95 ? -0.95 : angle; //min angle at -0.95
+    angle = angle > 0.95 ? 0.95 : angle; //max angle at 0.95
+    dx = Math.sqrt(2)*speed*angle;
+    dy = -Math.sqrt(Math.abs(2*speed*speed - dx*dx))
+  }
+  else if (y > canvasHeight - ballRadius) {
+    //touch the ground
+    lives--;
+    if (!lives) {
+      alert("GAME OVER");
+      document.location.reload();
     }
-    else { //touch the ground
-      lives--;
-      if (!lives) {
-        alert("GAME OVER");
-        document.location.reload();
-      }
-      else {
-        x = canvasWidth / 2;
-        y = canvasHeight - 30*scaleFactor;
-        dx = speed;
-        dy = -speed;
-        paddleX = (canvasWidth - paddleWidth) / 2;
-      }
+    else {
+      x = canvasWidth / 2;
+      y = canvasHeight - 30 * scaleFactor;
+      dx = speed;
+      dy = -speed;
+      paddleX = (canvasWidth - paddleWidth) / 2;
     }
+
   }
 
   //set next paddle position
@@ -178,6 +182,9 @@ function keyDownHandler(e) {
   }
   else if (e.keyCode == 37) {
     leftPressed = true;
+  }
+  else if (e.keyCode == 40) {
+    dy = speed;
   }
 }
 
@@ -201,5 +208,6 @@ function mouseMoveHandler(e) {
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 document.addEventListener("mousemove", mouseMoveHandler, false);
+
 
 draw();
