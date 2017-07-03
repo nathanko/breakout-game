@@ -102,7 +102,7 @@ function collisionDetection() {
           b.status = 0;
           score += dscore;
           bricksDown++;
-          dscore++;
+          dscore*=2;
           if (bricksDown == brickRowCount * brickColumnCount) {
             displayWinMessage();
             document.location.reload();
@@ -123,11 +123,15 @@ function displayWinMessage() {
 function drawScore() {
   ctx.font = 16 * scaleFactor + "px Arial";
   ctx.fillStyle = "#0095DD";
-  var str = "Score: " + score;
-  if (dscore != 1) {
-    str += " (Next: +" + dscore + ")";
+  ctx.fillText("Score: " + score, 8 * scaleFactor, 20 * scaleFactor);
+}
+
+function drawInfo() {
+  ctx.font = 16 * scaleFactor + "px Arial";
+  ctx.fillStyle = "#aaa";
+  if (dscore > 1) {
+    ctx.fillText("Next consecutive hit: +" + dscore + " bonus", canvasWidth / 2 - 100 * scaleFactor, canvasHeight / 2 + 100);
   }
-  ctx.fillText(str, 8 * scaleFactor, 20 * scaleFactor);
 }
 
 
@@ -144,6 +148,7 @@ function draw() {
   drawBall();
   drawPaddle();
   drawScore();
+  drawInfo();
   drawLives();
   collisionDetection();
 
@@ -167,6 +172,7 @@ function draw() {
   else if (y > canvasHeight - ballRadius) {
     //touch the ground
     lives--;
+    dscore = 1;
     if (!lives) {
       alert("Game over. You lost!");
       document.location.reload();
