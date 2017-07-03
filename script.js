@@ -102,7 +102,7 @@ function collisionDetection() {
     for (r = 0; r < brickRowCount; r++) {
       var b = bricks[c][r];
       if (b.status == 1) {
-        if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
+        if (x + ballRadius > b.x && x - ballRadius < b.x + brickWidth && y + ballRadius > b.y && y - ballRadius < b.y + brickHeight) {
           dy = -dy;
           b.status = 0;
           score += dscore;
@@ -114,11 +114,6 @@ function collisionDetection() {
   }
 }
 
-function drawLives() {
-  ctx.font = 16 * scaleFactor + "px Arial";
-  ctx.fillStyle = "#0095DD";
-  ctx.fillText("Lives: " + lives, canvasWidth - 65 * scaleFactor, 20 * scaleFactor);
-}
 
 function displayWinMessage() {
   var newhs = false;
@@ -130,10 +125,13 @@ function displayWinMessage() {
 
   //clear message area
   ctx.beginPath();
-  ctx.rect(0, 20 * scaleFactor, canvasWidth, canvasHeight - paddleHeight - 20 * scaleFactor);
+  ctx.rect(0, 0, canvasWidth, canvasHeight - paddleHeight - 20 * scaleFactor);
   ctx.fillStyle = "#eee";
   ctx.fill();
   ctx.closePath();
+  
+  drawScore();
+  drawLives();
 
   ctx.beginPath();
 
@@ -147,8 +145,8 @@ function displayWinMessage() {
   }
 
   ctx.font = 20 * scaleFactor + "px Arial";
-  ctx.fillText("Score: " + score, canvasWidth / 2 - 50 * scaleFactor, canvasHeight / 2 - 55 * scaleFactor);
-  ctx.fillText("Highscore: " + highscore, canvasWidth / 2 - 50 * scaleFactor, canvasHeight / 2 - 30 * scaleFactor);
+  ctx.fillText("Score: " + score, canvasWidth / 2 - 60 * scaleFactor, canvasHeight / 2 - 55 * scaleFactor);
+  ctx.fillText("High score: " + highscore, canvasWidth / 2 - 65 * scaleFactor, canvasHeight / 2 - 30 * scaleFactor);
 
   ctx.font = 12 * scaleFactor + "px Arial";
   ctx.fillStyle = "#aaa";
@@ -175,7 +173,7 @@ function displayLoseMessage() {
 
 function drawScore() {
   ctx.font = 16 * scaleFactor + "px Arial";
-  ctx.fillStyle = "#0095DD";
+  ctx.fillStyle = "#777";
   var scoreText = "Score: " + score;
   if (highscore){
     scoreText+="      High score: " + highscore; 
@@ -183,23 +181,29 @@ function drawScore() {
   ctx.fillText(scoreText, 8 * scaleFactor, 20 * scaleFactor);
 }
 
+function drawLives() {
+  ctx.font = 16 * scaleFactor + "px Arial";
+  ctx.fillStyle = "#777";
+  ctx.fillText("Lives: " + lives, canvasWidth - 65 * scaleFactor, 20 * scaleFactor);
+}
+
 function drawInfo() {
   ctx.font = 16 * scaleFactor + "px Arial";
   ctx.fillStyle = "#aaa";
-  if (dscore > 1) {
-    ctx.fillText("Next consecutive hit: +" + dscore + " bonus", canvasWidth / 2 - 100 * scaleFactor, canvasHeight / 2 + 10 * scaleFactor);
+  if (dscore > 2  ) {
+    ctx.fillText("+" + dscore/2 + " points! Nice streak!", canvasWidth / 2 - 80 * scaleFactor, canvasHeight / 2 + 10 * scaleFactor);
   }
 }
 
 function draw() {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-  drawBricks();
+  drawBricks();  
   collisionDetection();
+  drawInfo();  
   drawBall();
   drawPaddle();
   drawScore();
-  drawInfo();
   drawLives();
 
   //check win
