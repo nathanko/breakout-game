@@ -1,10 +1,12 @@
 var canvas = document.getElementById("game-canvas");
 
-if (window.innerHeight < window.innerWidth) {
-  canvas.height = window.innerHeight;
+if ((window.innerHeight - 50) * 480 / 320 < window.innerWidth) { //landscape
+  console.log("l")
+  canvas.height = window.innerHeight - 50;
   canvas.width = canvas.height * 480 / 320;
 }
 else {
+  console.log("p")
   canvas.width = window.innerWidth;
   canvas.height = canvas.width * 320 / 480;
 
@@ -155,9 +157,9 @@ function displayWinMessage() {
 }
 
 function displayLoseMessage() {
-	 //clear message area
+  //clear message area
   ctx.beginPath();
-  ctx.rect(0, canvasHeight / 2 -25*scaleFactor, canvasWidth, 50 * scaleFactor);
+  ctx.rect(0, canvasHeight / 2 - 25 * scaleFactor, canvasWidth, 50 * scaleFactor);
   ctx.fillStyle = "#eee";
   ctx.fill();
   ctx.closePath();
@@ -181,7 +183,7 @@ function drawInfo() {
   ctx.font = 16 * scaleFactor + "px Arial";
   ctx.fillStyle = "#aaa";
   if (dscore > 1) {
-    ctx.fillText("Next consecutive hit: +" + dscore + " bonus", canvasWidth / 2 - 100 * scaleFactor, canvasHeight / 2 + 10*scaleFactor);
+    ctx.fillText("Next consecutive hit: +" + dscore + " bonus", canvasWidth / 2 - 100 * scaleFactor, canvasHeight / 2 + 10 * scaleFactor);
   }
 }
 
@@ -228,7 +230,7 @@ function draw() {
     lives--;
     dscore = 1;
     if (!lives) {
-    	lost = true;
+      lost = true;
       displayLoseMessage();
       canvas.addEventListener("click", reload, false);
       document.addEventListener("keyup", reload, false);

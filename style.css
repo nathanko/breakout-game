@@ -1,6 +1,20 @@
-* {
+*,
+.navbar {
   padding: 0;
   margin: 0;
+}
+
+body {
+  background: #eee;
+}
+
+canvas {
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+
+.navbar {
+  height: 50px;
 }
 
 canvas {

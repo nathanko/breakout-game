@@ -4,13 +4,24 @@
 <head>
   <meta charset="utf-8" />
   <title>Breakout Game</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
   <link href="style.css" rel="stylesheet" type="text/css" />
+  <link rel="icon" type="image/x-icon" href="/img/logo-blue.png">
 </head>
 
 <body>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand clearfix" href="/">
+          <img src="/img/logo-blue.png" style="max-height:100%;max-width:100%;padding-right: 10px;" class="pull-left">
+          <span class="pull-left">Nathan Ko</span></a>
+      </div>
+    </div>
+  </nav>
   <canvas id="game-canvas"></canvas>
-  <!-- <canvas id="game-canvas" width="480" height="320"></canvas> -->
   <script src="script.js"></script>
 </body>
 <script src="/ga.js"></script>
+
 </html>
